@@ -5,62 +5,54 @@ import Add from './components/Add'
 import Card from './components/Card'
 
 const App = () => {
-
   const [heading, setheading] = useState('')
   const [notes, setNotes] = useState('')
   const [task, setTask] = useState([])
 
-  const submitHandler = (dets)=>{
-    dets.preventDefault();
-
-    const copyTask = [...task];
-    copyTask.push({heading,notes});
- 
-    setTask(copyTask);
-
-    setheading('');
-    setNotes('');
+  const submitHandler = (e) => {
+    e.preventDefault()
+    setTask([...task, { heading, notes }])
+    setheading('')
+    setNotes('')
   }
 
-  const deleteNote = (idx)=>{
-    const copyTask = [...task];
-    copyTask.splice(idx,1);
-
-    setTask(copyTask);
+  const deleteNote = (idx) => {
+    const copy = [...task]
+    copy.splice(idx, 1)
+    setTask(copy)
   }
 
   return (
-    
-   <div className='h-screen lg:w-full flex' >
-    <div className='h-screen lg:w-1/2 flex justify-center items-center flex-col bg-green-100 gap-12'>
+    <div className="min-h-screen flex flex-col lg:flex-row">
+      
+      {/* Left Section */}
+      <div className="lg:w-1/2 flex flex-col items-center justify-center
+                      bg-green-100 gap-10 p-6">
+        <h1 className="text-4xl md:text-6xl font-bold text-center">
+          Your Daily Task
+        </h1>
 
-    <h1 className='text-6xl font-bold'>Your Daily Task</h1>
+        <form onSubmit={submitHandler} className="w-full flex flex-col gap-8 items-center">
+          <Heading heads={heading} setHeadfn={setheading} />
+          <MainWrite notes={notes} notefn={setNotes} />
+          <Add />
+        </form>
+      </div>
 
-      <form
-        onSubmit={function(dets){
-          submitHandler(dets);
-        }}
-        className='flex flex-col gap-10'>
-        <Heading heads={heading} setHeadfn = {setheading} />
-        <MainWrite notes={notes} notefn = {setNotes} />
-        <Add />
-      </form>
+      {/* Right Section */}
+      <div className="lg:w-1/2 bg-green-300 p-6 flex flex-wrap gap-6 justify-center overflow-y-auto">
+        {task.map((item, idx) => (
+          <Card
+            key={idx}
+            idx={idx}
+            heading={item.heading}
+            notes={item.notes}
+            deleteNote={deleteNote}
+          />
+        ))}
+      </div>
 
     </div>
-
-     <div className="h-screen lg:w-1/2 flex gap-6 p-8 bg-green-300">
-        {task.map((item, idx) => (
-        <Card
-          key={idx}
-          heading={item.heading}
-          notes={item.notes}
-          deleteNote={deleteNote}
-        />
-      ))}
-</div>
-
-
-   </div>
   )
 }
 
